@@ -1,5 +1,6 @@
 import socket
 import time
+from collections import OrderedDict
 from threading import Lock
 
 from .exceptions import InvalidResponseError, LircError
@@ -18,11 +19,8 @@ class LircPy():
     - returns the Resposne from LIRC as string
     """
     def __init__(self, lirc_host='localhost', lirc_port=8765):
-        self.lirc_host = lirc_host
-        self.lirc_port = lirc_port
-
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.connect((self.lirc_host, self.lirc_port))
+        self.s.connect((lirc_host, lirc_port))
         self.sf = self.s.makefile()
 
         self._last_sent = {}
@@ -114,7 +112,7 @@ class LircPy():
         Returns a dictionary with the button names as keys and the raw data as values.
         """
         data = self._send(' '.join(('LIST', remote_control)))
-        return dict([reversed(line.split(' ', 1)) for line in data.strip().split('\n')])
+        return OrderedDict([reversed(line.split(' ', 1)) for line in data.strip().splitlines()])
 
     def set_inputlog(self, path=None):
         """ Send  the SET_INPUTLOG command. """

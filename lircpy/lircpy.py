@@ -100,6 +100,14 @@ class LircPy():
         self._sent(remote_control, button_name)
         return result
 
+    def get_remotes(self):
+        """
+        Get all available remotes (using the LIST command).
+        Returns a list of remote names.
+        """
+        data = self._send('LIST')
+        return data.strip().splitlines()
+
     def get_button_list(self, remote_control):
         """
         Get all available buttons for a remote (using the LIST command).
